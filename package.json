@@ -1,0 +1,11 @@
+{
+  "name": "bookmark-gallery",
+  "private": true,
+  "scripts": {
+    "start": "npx web-ext run --firefox-profile=default-release --keep-profile-changes",
+    "build": "node scripts/build.mjs",
+    "build:chrome": "node scripts/build.mjs chrome",
+    "chrome": "node scripts/build.mjs chrome --watch",
+    "package": "node scripts/build.mjs --zip"
+  }
+}

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bookmark Gallery</title>
+<link rel="icon" href="../icons/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="bookmarks.css">
+</head>
+<body>
+
+  <header class="toolbar">
+    <div class="toolbar-heading">
+      <img class="app-logo" src="../icons/logo.svg" alt="" width="30" height="30">
+      <h1>Bookmark Gallery</h1>
+    </div>
+
+    <div class="check-status" role="status">
+      <div class="check-status-body">
+        <span id="check-status-label" class="check-status-label"></span>
+        <div class="check-track"><div id="check-fill" class="check-fill"></div></div>
+      </div>
+      <button id="check-toggle-btn" class="btn btn-ghost btn-small"></button>
+    </div>
+
+    <nav class="tab-nav" role="tablist">
+      <button id="tab-btn-list" class="tab-btn active" role="tab" aria-selected="true">Bookmarks</button>
+      <button id="tab-btn-insights" class="tab-btn" role="tab" aria-selected="false">Insights</button>
+      <!-- Views: Images plus every view plugin (mountViews adds those). -->
+      <div class="views-menu">
+        <button id="views-btn" class="tab-btn views-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="views-list">
+          <span id="views-btn-label">Views</span><span class="views-caret" aria-hidden="true">▾</span>
+        </button>
+        <div id="views-list" class="views-list" role="menu" hidden>
+          <button id="tab-btn-images" class="views-item" role="menuitemradio" aria-checked="false" data-hint="Masonry of image bookmarks">Images</button>
+        </div>
+      </div>
+      <button id="tab-btn-cleanup" class="tab-btn" role="tab" aria-selected="false">Clean up</button>
+    </nav>
+  </header>
+
+  <!-- ===================== TAB 1: LIST ===================== -->
+  <section id="panel-list" class="tab-panel">
+
+    <div class="list-controls">
+      <input
+        id="search-input"
+        type="search"
+        placeholder="Filter by title or URL…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <span id="filter-count" class="filter-count" hidden></span>
+
+      <select id="category-filter" title="Filter by category">
+        <option value="all">All categories</option>
+        <option value="Recipes">Recipes</option>
+        <option value="News &amp; Articles">News &amp; Articles</option>
+        <option value="Video">Video</option>
+        <option value="Images">Images</option>
+        <option value="Music">Music</option>
+        <option value="Social Media">Social Media</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Code &amp; Dev">Code &amp; Dev</option>
+        <option value="Reference &amp; Docs">Reference &amp; Docs</option>
+        <option value="Forum">Forum</option>
+        <option value="Blog">Blog</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <select id="sort-select" title="Sort order">
+        <option value="default">Bookmark order</option>
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="title">Title A–Z</option>
+        <option value="status">Failed first</option>
+      </select>
+
+      <div class="view-switch" role="group" aria-label="View">
+        <button class="view-btn" data-view="list" title="Every bookmark in one list">List</button>
+        <button class="view-btn" data-view="domain" title="Grouped by website">By domain</button>
+        <button class="view-btn" data-view="folders" title="Exactly as in Firefox: folders and order">Folders</button>
+      </div>
+      <button id="expand-all-btn" class="btn btn-ghost" hidden>Expand all</button>
+      <button id="collapse-all-btn" class="btn btn-ghost" hidden>Collapse all</button>
+
+      <button id="refresh-all-btn" class="btn btn-secondary" title="Re-fetch preview data for every bookmark, ignoring the cache">
+        Refresh all previews
+      </button>
+    </div>
+
+    <main id="scroll-container" class="scroll-container">
+      <div id="spacer" class="spacer">
+        <div id="visible-rows" class="visible-rows"></div>
+      </div>
+    </main>
+
+    <p id="empty-state" class="empty-state" hidden>No bookmarks match your filters.</p>
+  </section>
+
+  <!-- ===================== TAB 2: INSIGHTS ===================== -->
+  <section id="panel-insights" class="tab-panel" hidden>
+
+    <div class="insights-banner">
+      <p id="insights-coverage-label">Checked 0 of 0 bookmarks.</p>
+    </div>
+
+    <div id="insights-kpis" class="kpi-row"></div>
+
+    <div class="charts-grid">
+
+      <div class="chart-card chart-card-wide">
+        <div class="chart-head">
+          <h2 id="timeline-title">Bookmarks added per year</h2>
+          <p class="chart-sub" id="timeline-sub"></p>
+        </div>
+        <div id="chart-timeline" class="col-chart"></div>
+        <details class="chart-table"><summary>Show as table</summary><div id="table-timeline"></div></details>
+      </div>
+
+      <div class="chart-card">
+        <h2>By domain</h2>
+        <div class="chart-row">
+          <div id="pie-domain" class="pie"></div>
+          <ul id="legend-domain" class="legend"></ul>
+        </div>
+        <table class="top-table">
+          <thead><tr><th>#</th><th>Domain</th><th>Count</th><th>%</th></tr></thead>
+          <tbody id="table-domain"></tbody>
+        </table>
+      </div>
+
+      <div class="chart-card">
+        <h2>Active vs. broken links</h2>
+        <div class="chart-row">
+          <div id="pie-status" class="pie"></div>
+          <ul id="legend-status" class="legend"></ul>
+        </div>
+        <table class="top-table">
+          <thead><tr><th>#</th><th>Status</th><th>Count</th><th>%</th></tr></thead>
+          <tbody id="table-status"></tbody>
+        </table>
+      </div>
+
+      <div class="chart-card">
+        <h2>By category</h2>
+        <div class="chart-row">
+          <div id="pie-category" class="pie"></div>
+          <ul id="legend-category" class="legend"></ul>
+        </div>
+        <table class="top-table">
+          <thead><tr><th>#</th><th>Category</th><th>Count</th><th>%</th></tr></thead>
+          <tbody id="table-category"></tbody>
+        </table>
+      </div>
+
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <h2>Dead links by year bookmarked</h2>
+          <p class="chart-sub">Share of checked bookmarks that are gone (page not found, or the site no longer exists)</p>
+        </div>
+        <div id="chart-rot" class="col-chart"></div>
+        <details class="chart-table"><summary>Show as table</summary><div id="table-rot"></div></details>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <h2>Why links fail</h2>
+          <p class="chart-sub">Every bookmark that couldn't be loaded, by reason</p>
+        </div>
+        <div id="chart-failures" class="bar-list"></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <h2>Biggest folders</h2>
+          <p class="chart-sub">Bookmarks filed directly in each folder</p>
+        </div>
+        <div id="chart-folders" class="bar-list"></div>
+      </div>
+
+      <div class="chart-card chart-card-wide">
+        <div class="chart-head">
+          <h2>When you bookmark</h2>
+          <p class="chart-sub">Bookmarks added by day of the week and hour of the day (your local time)</p>
+        </div>
+        <div id="chart-heatmap" class="heatmap"></div>
+        <details class="chart-table"><summary>Show as table</summary><div id="table-heatmap"></div></details>
+      </div>
+
+    </div>
+
+    <div id="chart-tooltip" class="chart-tooltip" role="tooltip" hidden></div>
+
+    <p class="insights-note">
+      Category and status are best-effort guesses based on each page's Open Graph tags,
+      structured data, and domain — not a guarantee. Broken/active status only reflects
+      bookmarks that have been checked so far.
+    </p>
+  </section>
+
+  <!-- ===================== TAB 3: IMAGES ===================== -->
+  <section id="panel-images" class="tab-panel" hidden>
+    <div class="images-toolbar">
+      <p id="images-count-label" class="count-label">0 image bookmarks found.</p>
+    </div>
+
+    <div id="images-scroll" class="images-scroll">
+      <div id="images-masonry" class="images-masonry"></div>
+    </div>
+
+    <p id="images-empty-state" class="empty-state" hidden>
+      No images to show yet. This tab shows direct image links, known image sites
+      (Imgur, Flickr, Unsplash, etc.), and any bookmark whose Open Graph type is an image —
+      use "Check remaining" in the header to check more bookmarks. Images that can't be loaded are left out.
+    </p>
+  </section>
+
+  <!-- ===================== TAB 4: CLEAN UP ===================== -->
+  <section id="panel-cleanup" class="tab-panel" hidden>
+
+    <div id="repair-section" class="cleanup-section cleanup-repair" hidden>
+      <div class="cleanup-head">
+        <div>
+          <h2>Repair</h2>
+          <p id="repair-summary" class="cleanup-sub"></p>
+        </div>
+        <button id="repair-btn" class="btn btn-secondary">Turn them back into separators</button>
+      </div>
+    </div>
+
+    <div class="cleanup-section">
+      <div class="cleanup-head">
+        <div>
+          <h2>Smart cleanup</h2>
+          <p id="smart-summary" class="cleanup-sub"></p>
+        </div>
+        <button id="smart-run-btn" class="btn btn-secondary">Reorganize</button>
+      </div>
+      <div class="smart-scope" role="radiogroup" aria-label="What to reorganize">
+        <label>
+          <input type="radio" name="smart-scope" value="loose" checked>
+          <span><strong>Loose bookmarks only</strong> — the unfiled ones in Bookmarks Menu, Other Bookmarks and Mobile.
+          Your own folders and the Bookmarks Toolbar stay exactly as they are.</span>
+        </label>
+        <label>
+          <input type="radio" name="smart-scope" value="everything">
+          <span><strong>Everything</strong> — also moves bookmarks out of your own folders (toolbar items still stay).</span>
+        </label>
+      </div>
+      <div id="smart-plan" class="smart-plan"></div>
+    </div>
+
+    <div class="cleanup-section">
+      <div class="cleanup-head">
+        <div>
+          <h2>Duplicates</h2>
+          <p id="dupes-summary" class="cleanup-sub"></p>
+        </div>
+        <button id="dupes-remove-all-btn" class="btn btn-danger">Remove all extra copies</button>
+      </div>
+      <div id="dupes-list" class="cleanup-list"></div>
+    </div>
+
+    <div class="cleanup-section">
+      <div class="cleanup-head">
+        <div>
+          <h2>Broken links</h2>
+          <p id="broken-summary" class="cleanup-sub"></p>
+        </div>
+        <div class="cleanup-actions">
+          <button id="broken-select-dead-btn" class="btn btn-ghost">Select likely dead</button>
+          <button id="broken-select-none-btn" class="btn btn-ghost">Select none</button>
+          <button id="broken-recheck-btn" class="btn btn-secondary">Re-check all</button>
+          <button id="broken-remove-btn" class="btn btn-danger">Remove selected</button>
+        </div>
+      </div>
+      <div id="broken-list" class="cleanup-list"></div>
+    </div>
+
+    <div class="cleanup-section">
+      <div class="cleanup-head">
+        <div>
+          <h2>Empty folders</h2>
+          <p id="empty-folders-summary" class="cleanup-sub"></p>
+        </div>
+        <div class="cleanup-actions">
+          <button id="empty-folders-restore-btn" class="btn btn-secondary">Restore into all empty folders</button>
+          <button id="empty-folders-delete-btn" class="btn btn-danger">Delete all empty folders</button>
+        </div>
+      </div>
+      <div id="empty-folders-list" class="cleanup-list"></div>
+    </div>
+
+    <div class="cleanup-section">
+      <div class="cleanup-head">
+        <div>
+          <h2>Recently removed</h2>
+          <p class="cleanup-sub">
+            Everything removed from here or the Bookmarks tab is kept so it can be restored into its
+            original folder and position. Restored bookmarks get a new "date added".
+            Smart cleanup moves are listed here too and can be moved back.
+          </p>
+        </div>
+        <button id="trash-empty-btn" class="btn btn-ghost">Empty trash</button>
+      </div>
+      <div id="trash-list" class="cleanup-list"></div>
+    </div>
+  </section>
+
+  <div class="bottom-stack">
+  <div id="job-bar" class="job-bar" hidden role="status" aria-live="polite">
+    <div class="job-bar-text">
+      <span id="job-label"></span>
+      <span id="job-count" class="job-count"></span>
+    </div>
+    <div class="job-track"><div id="job-fill" class="job-fill"></div></div>
+    <button id="job-cancel-btn" class="btn btn-danger btn-small">Cancel</button>
+  </div>
+
+  <div id="toast" class="toast" hidden role="status">
+    <span id="toast-message"></span>
+    <button id="toast-undo-btn" class="btn btn-secondary">Undo</button>
+    <button id="toast-close-btn" class="toast-close" title="Dismiss">×</button>
+  </div>
+  </div>
+
+  <script src="bookmarks.js"></script>
+  <!-- View plugins: each registers its own tab (see views/README.md). -->
+  <script src="views/recipes.js"></script>
+</body>
+</html>

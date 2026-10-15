@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Bookmark Gallery",
+  "version": "1.0.0",
+  "description": "Browse every bookmark as a virtual scrolling list, enriched with Open Graph previews (title, description, image) pulled from each site and cached locally.",
+
+  "permissions": [
+    "bookmarks",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+
+  "icons": {
+    "16": "icons/png/logo-16.png",
+    "32": "icons/png/logo-32.png",
+    "48": "icons/png/logo-48.png",
+    "128": "icons/png/logo-128.png"
+  },
+
+  "action": {
+    "default_title": "Open Bookmark Gallery",
+    "default_icon": {
+      "16": "icons/png/logo-16.png",
+      "32": "icons/png/logo-32.png"
+    }
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "minimum_chrome_version": "116"
+}

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Bookmark Gallery: a bookmark ribbon with a 2×2 gallery grid cut into it. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5ea1ff"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#bg)"/>
+  <path d="M10.5 6.5h11a1.5 1.5 0 0 1 1.5 1.5v18.2a.6.6 0 0 1-.93.5L16 22.6l-6.07 4.1a.6.6 0 0 1-.93-.5V8a1.5 1.5 0 0 1 1.5-1.5z" fill="#fff"/>
+  <g fill="url(#bg)">
+    <rect x="11.5" y="9.5" width="3.8" height="3.8" rx="1"/>
+    <rect x="16.7" y="9.5" width="3.8" height="3.8" rx="1"/>
+    <rect x="11.5" y="14.7" width="3.8" height="3.8" rx="1"/>
+    <rect x="16.7" y="14.7" width="3.8" height="3.8" rx="1"/>
+  </g>
+</svg>

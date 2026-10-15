@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "name": "Bookmark Gallery",
+  "version": "1.0.0",
+  "description": "Browse every bookmark as a virtual scrolling list, enriched with Open Graph previews (title, description, image) pulled from each site and cached locally.",
+
+  "permissions": [
+    "bookmarks",
+    "storage",
+    "<all_urls>"
+  ],
+
+  "icons": {
+    "48": "icons/logo.svg",
+    "96": "icons/logo.svg"
+  },
+
+  "browser_action": {
+    "default_title": "Open Bookmark Gallery",
+    "default_icon": "icons/logo.svg"
+  },
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "bookmark-gallery@rocket1.github.io",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+# Build output (npm run build / npm run package)
+dist/
+artifacts/
+web-ext-artifacts/
+node_modules/
+
+# Personal editor / tool settings
+.idea/
+.vscode/
+.claude/settings.local.json
+.mcp.json
+
+.DS_Store
